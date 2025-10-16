@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <!-- わざと viewport 無しでスマホ最悪体験に -->
+  <title>最悪のUIコレクション</title>
+  <style>
+    /* 視認性破壊 */
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: "Comic Sans MS", Papyrus, cursive;
+      background: repeating-linear-gradient(45deg, #ff00ff, #ff00ff 10px, #00ffff 10px, #00ffff 20px);
+      color: #ff0000; /* 赤字×派手背景の最悪コントラスト */
+      animation: hue 2s linear infinite;
+      overflow-x: scroll; /* 横スクロール地獄 */
+    }
+    * { cursor: wait !important; letter-spacing: 0.25em; }
+    a { text-decoration: underline wavy double; color: #00f; }
+    @keyframes hue { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg);} }
+
+    /* 点滅・揺れ */
+    .blink { animation: blink 0.4s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .shake { animation: shake 0.2s infinite; }
+    @keyframes shake { 0%,100%{ transform: translateX(0);} 50%{ transform: translateX(4px);} }
+
+    /* レイアウトにテーブル乱用 */
+    table.layout { width: 1400px; border: 10px ridge magenta; background: rgba(255,255,255,0.2); }
+    td { border: 5px dotted yellow; padding: 20px; }
+
+    /* 固定オーバーレイで本編を見せない */
+    .overlay {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.75); color: #0f0; z-index: 99999;
+    }
+    .overlay .panel { background: #111; border: 8px groove fuchsia; padding: 24px; width: 90%; max-width: 900px; text-align: center; }
+
+    /* フッターが本文を覆う */
+    .footer { position: fixed; bottom: 0; left: 0; right: 0; height: 120px; background: repeating-linear-gradient(90deg, #000, #000 8px, #ff0 8px, #ff0 16px); color: #fff; z-index: 9999; }
+
+    /* 無意味な巨大ツールチップ領域 */
+    .tooltip-blocker { position: fixed; top: 10%; left: 5%; width: 90%; height: 20%; z-index: 8000; pointer-events: none; }
+
+    /* クリックできそうでできないボタン */
+    .fake-button { display: inline-block; padding: 16px 28px; background: linear-gradient(180deg,#eee,#aaa); border: 6px outset #333; box-shadow: 0 0 20px 10px hotpink; }
+
+    /* 入力不能フォーム（コントラストも地獄） */
+    .form label { display: block; font-weight: bold; color: #ff0; text-shadow: 0 0 8px #f00; }
+    .form input, .form select, .form textarea { width: 30%; min-width: 180px; background: #222; color: #222; border: 3px solid #222; }
+
+    /* モーダルがさらにモーダルを呼ぶ */
+    .modal { position: fixed; top: 15%; left: 20%; width: 60%; background: #222; color: #fff; border: 12px double lime; padding: 20px; z-index: 100000; box-shadow: 0 0 40px 20px #0ff; }
+
+    /* 画面を横切るマルquee達 */
+    marquee { font-size: 28px; font-weight: 900; }
+
+    /* スクロールジャック感（このフレーム内だけ） */
+    .scroll-killer { height: 400px; overflow: hidden; position: relative; border: 12px dashed red; }
+    .scroll-killer .content { height: 800px; overflow: auto; filter: blur(1px); }
+
+    /* クリック不可のチェック必須 */
+    .mustcheck { pointer-events: none; opacity: 0.4; }
+
+    /* 画面をやたら分割するフレーム風 */
+    iframe { width: 320px; height: 200px; border: 12px inset teal; }
+  </style>
+</head>
+<body onload="startupChaos()">
+
+  <!-- 開幕マルチ通知地獄 -->
+  <div class="overlay" id="overlay1">
+    <div class="panel">
+      <h1 class="blink shake">🧨 同意してください（読めない利用規約 987,654 文字）🧨</h1>
+      <p>全てのクッキーを<strong>必ず</strong>受け入れてください。拒否はありません。<br>チェックは必須ですがクリックできません。</p>
+      <label><input type="checkbox" class="mustcheck"> すべてに同意（クリック不可）</label>
+      <div style="margin-top: 16px">
+        <button onclick="spawnMoreModals()" class="fake-button">詳細（無限モーダル）</button>
+        <button onclick="closeOverlayEventually()" class="fake-button">OK（5分後）</button>
+      </div>
+    </div>
+  </div>
+
+  <marquee scrollamount="25" direction="left">🔥 期間限定! 今すぐクリック! クリック! クリック! 🔥</marquee>
+  <marquee scrollamount="10" direction="right">📢 ポップアップを許可してください！最高の体験のために！📢</marquee>
+
+  <table class="layout" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+        <h2 title="このタイトルは一生表示され続けます（邪魔）">ようこそ：最悪のUIへ</h2>
+        <div class="scroll-killer" onwheel="event.preventDefault()" title="スクロール禁止ゾーン">
+          <div class="content">
+            <p class="blink">ここでは読ませないための本文が延々と続きます。ここでは読ませないための本文が延々と続きます。ここでは読ませないための本文が延々と続きます。</p>
+            <p>重要リンク：<a href="#" onclick="return false">こちら（何も起きない）</a></p>
+            <iframe srcdoc="<h3>インラインフレーム</h3><p>戻るボタンが効かない感。</p>"></iframe>
+            <iframe srcdoc="<h3>広告</h3><p>閉じるボタンは背景色と同化。</p>"></iframe>
+          </div>
+        </div>
+      </td>
+      <td>
+        <form class="form" onsubmit="fakeSubmit(event)">
+          <label for="name">お名前（必須ですが読み取られません）</label>
+          <input id="name" name="name" placeholder="入力中に消えます" oninput="this.value=''">
+
+          <label for="email">メール（@禁止）</label>
+          <input id="email" name="email" placeholder="example(at)example(dot)com" pattern="^[^@]+$">
+
+          <label for="pw">パスワード（表示）</label>
+          <input id="pw" name="pw" type="text" value="password1234">
+
+          <label>性別</label>
+          <select>
+            <option>選択してください</option>
+            <option>はい</option>
+            <option>いいえ</option>
+            <option>たぶん</option>
+          </select>
+
+          <label>
+            <input type="checkbox" checked>
+            メールを一秒ごとに送ってスパム（既定）
+          </label>
+
+          <button type="submit" class="fake-button" id="submitBtn">送信（たまに無効化）</button>
+        </form>
+      </td>
+      <td>
+        <h3>FAQ（役に立たない）</h3>
+        <ul>
+          <li>Q. 質問1 → A. 後ほど。</li>
+          <li>Q. 質問2 → A. それは仕様です。</li>
+          <li>Q. バグですか？ → A. 機能です。</li>
+        </ul>
+        <p class="shake">※ 重要: 保存は自動的に失われます。</p>
+      </td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    <marquee direction="up" height="100">📜 利用規約：読めないほど長い縦スクロールテキスト。<br>📜 プライバシー：あなたのものは私たちのもの。</marquee>
+    <div style="position:absolute; right:12px; top:12px; background:#ff00ff; padding:8px; border:6px solid #000;">閉じる✕（ダミー）</div>
+  </div>
+
+  <!-- さらに重ねるモーダル（閉じても閉じても出る） -->
+  <div class="modal" id="modalA" style="display:none">
+    <h2>ニュースレター登録（必須）</h2>
+    <p>閉じるにはメール登録が必要です（実は閉じられません）。</p>
+    <input placeholder="メール（@禁止）"><button class="fake-button" onclick="spawnMoreModals()">登録</button>
+  </div>
+
+  <div class="tooltip-blocker" title="このツールチップがすべての要素の上に常駐し続けます。"></div>
+
+  <script>
+    function startupChaos(){
+      // たまに送信ボタンを無効化
+      setInterval(()=>{
+        const b = document.getElementById('submitBtn');
+        b.disabled = !b.disabled;
+        b.textContent = b.disabled ? '送信（無効中）' : '送信（たまに無効化）';
+      }, 1500);
+
+      // 無限に位置を変える邪魔な要素
+      const blocker = document.querySelector('.tooltip-blocker');
+      setInterval(()=>{
+        blocker.style.top = (10 + Math.random()*60) + '%';
+        blocker.style.left = (5 + Math.random()*40) + '%';
+      }, 700);
+
+      // 3秒ごとにミニ広告を追加
+      setInterval(()=>{
+        const ad = document.createElement('div');
+        ad.style.position='fixed';
+        ad.style.top = Math.floor(Math.random()*80)+'%';
+        ad.style.left = Math.floor(Math.random()*80)+'%';
+        ad.style.padding='10px 14px';
+        ad.style.background='linear-gradient(90deg,#ff0,#f0f)';
+        ad.style.border='8px solid #000';
+        ad.style.zIndex=7777;
+        ad.textContent='🔔 今だけ 0% OFF!';
+        document.body.appendChild(ad);
+        setTimeout(()=> ad.remove(), 4000);
+      }, 3000);
+
+      // オーバーレイはすぐ閉じない
+      window._overlayClosableAt = Date.now() + 8000;
+    }
+
+    function closeOverlayEventually(){
+      const left = window._overlayClosableAt - Date.now();
+      if (left > 0) {
+        alert('まだ閉じられません。あと約 ' + Math.ceil(left/1000) + ' 秒待ってください。');
+        return;
+      }
+      document.getElementById('overlay1').style.display='none';
+      document.getElementById('modalA').style.display='block';
+    }
+
+    function spawnMoreModals(){
+      const m = document.createElement('div');
+      m.className='modal';
+      m.style.top = (10 + Math.random()*40) + '%';
+      m.style.left = (10 + Math.random()*40) + '%';
+      m.innerHTML = '<h3>追加の確認</h3><p>更なる同意が必要です。</p><button class="fake-button" onclick="this.parentElement.remove()">OK（実は閉じるだけ）</button>';
+      document.body.appendChild(m);
+    }
+
+    function fakeSubmit(e){
+      e.preventDefault();
+      alert('送信に失敗しました：未知のエラー（-1）');
+      location.hash = '#top'; // 位置が飛ぶ
+    }
+  </script>
+</body>
+</html>
